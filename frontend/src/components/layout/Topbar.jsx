@@ -1,3 +1,4 @@
+// src/components/layout/Topbar.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -7,11 +8,11 @@ import {
 import { logoutThunk } from "../../features/auth/authSlice";
 
 const Svg = {
-  Coins:(p)=>(
-    <svg viewBox="0 0 24 24" className="w-4 h-4 block" fill="none" stroke="#4b6bff" strokeWidth="1.6" {...p}>
-      <path d="M12 6.5c4.1 0 7.5-1.1 7.5-2.5S16.1 1.5 12 1.5 4.5 2.6 4.5 4 7.9 6.5 12 6.5Z"/>
-      <path d="M19.5 4v4c0 1.4-3.4 2.5-7.5 2.5S4.5 9.4 4.5 8V4"/>
-      <path d="M19.5 8v4c0 1.4-3.4 2.5-7.5 2.5S4.5 13.4 4.5 12V8"/>
+  Tokens: (p) => (
+    <svg viewBox="0 0 24 24" className="w-[20px] h-[20px] block" fill="none" stroke="currentColor" strokeWidth="1.8" {...p}>
+      <circle cx="10" cy="10" r="4.3" />
+      <circle cx="14.6" cy="14.3" r="4.3" />
+      <path d="M7.5 10h5M12 14.2h5" strokeLinecap="round" />
     </svg>
   ),
   Bell:(p)=>(<svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="#1f2a44" strokeWidth="1.6" {...p}><path d="M9 17a3 3 0 006 0"/><path d="M5 17h14l-1.4-1.4A2 2 0 0117 14v-3a5 5 0 10-10 0v3a2 2 0 01-.6 1.4L5 17Z" strokeLinejoin="round"/></svg>),
@@ -25,7 +26,7 @@ export default function Topbar(){
   const dispatch = useDispatch();
   const { user } = useSelector(s=>s.auth);
   const { credits, notificationsOpen, notifications, loadingNotifs } = useSelector(s=>s.ui);
-  const unread = useSelector(selectUnreadCount) || 0;
+  const unread = useSelector(selectUnreadCount);
 
   const [profileOpen, setProfileOpen] = useState(false);
   const notifRef = useRef(null), notifBtnRef = useRef(null);
@@ -37,7 +38,7 @@ export default function Topbar(){
     if (notificationsOpen) dispatch(hideNotifications());
     else {
       dispatch(toggleNotifications());
-      if ((notifications || []).length === 0) dispatch(fetchNotifications());
+      if (notifications.length === 0) dispatch(fetchNotifications());
       setProfileOpen(false);
     }
   };
@@ -63,15 +64,17 @@ export default function Topbar(){
   const username = user?.username ?? "User";
 
   return (
-    <header className="h-16 bg-white border-b border-[#eef0f4] flex items-center justify-between px-6">
-      {/* LEFT: product label exactly like the ref */}
-      <div className="text-[18px] font-semibold text-slate-900">AI Chat</div>
+    <header className="h-16 bg-white border-b border-[#eef0f4] flex items-center justify-between px-6 relative">
+      {/* Brand on the far-left, like screenshot */}
+      <div className="text-[20px] font-semibold tracking-[-0.01em] text-slate-900">
+        AI Chat
+      </div>
 
-      {/* RIGHT cluster (unchanged functionality) */}
       <div className="flex items-center gap-4">
-        <div className="inline-flex items-center justify-center gap-2 h-10 px-3 rounded-[22px] bg-white shadow-[inset_0_0_0_1px_#E6ECFF]">
-          <Svg.Coins />
-          <span className="text-[15px] font-medium text-[#1f2a44] leading-none tabular-nums">
+        {/* CREDITS CHIP — slightly larger icon & number */}
+        <div className="inline-flex items-center gap-2 h-11 px-4 rounded-[22px] bg-[#f4f7ff] text-[#3556f3] shadow-[inset_0_0_0_1px_#e6ecff]">
+          <Svg.Tokens />
+          <span className="text-[17px] font-semibold leading-none tabular-nums">
             {Number.isFinite(credits)?credits.toLocaleString():credits??0}
           </span>
         </div>
@@ -99,24 +102,18 @@ export default function Topbar(){
               <button className="text-xs text-blue-600 hover:underline disabled:opacity-50" onClick={()=>dispatch(markAllRead())} disabled={unread===0}>Mark all read</button>
             </div>
             {loadingNotifs&&<div className="p-3 text-sm text-slate-500">Loading…</div>}
-            {!loadingNotifs&&(notifications||[]).length===0&&<div className="p-3 text-sm text-slate-500">No notifications</div>}
+            {!loadingNotifs&&notifications.length===0&&<div className="p-3 text-sm text-slate-500">No notifications</div>}
             <div className="space-y-2">
-              {(notifications||[]).map(n=>{
-                const dot = n?.color ? n.color
-                  : (n?.title||"").toLowerCase().includes("welcome") ? "bg-green-500"
-                  : n?.read ? "bg-gray-300" : "bg-blue-500";
-                const created = n?.createdAt ? new Date(n.createdAt).toLocaleString() : "";
-                return (
-                  <div key={n.id} className="rounded-xl border border-[#eef0f4] p-3 flex gap-3">
-                    <div className={`w-2 h-2 rounded-full mt-2 ${dot}`}/>
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-slate-900">{n?.title||"Notification"}</div>
-                      {n?.body&&<div className="text-sm text-slate-600">{n.body}</div>}
-                      <div className="text-[11px] text-slate-400 mt-1">{created}</div>
-                    </div>
+              {notifications.map(n=>(
+                <div key={n.id} className="rounded-xl border border-[#eef0f4] p-3 flex gap-3">
+                  <div className={`w-2 h-2 rounded-full mt-2 ${n.read?"bg-gray-300":"bg-blue-500"}`}/>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium text-slate-900">{n.title}</div>
+                    {n.body&&<div className="text-sm text-slate-600">{n.body}</div>}
+                    <div className="text-[11px] text-slate-400 mt-1">{new Date(n.createdAt).toLocaleString?.()||""}</div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           </div>
         )}

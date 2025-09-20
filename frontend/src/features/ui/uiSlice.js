@@ -1,5 +1,7 @@
+// src/features/ui/uiSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api, { endpoints } from "../../app/api";
+import { sendMessage } from "../chat/chatSlice"; // ← NEW
 
 // ---- Thunks ----
 export const fetchCredits = createAsyncThunk("ui/fetchCredits", async () => {
@@ -55,6 +57,17 @@ const uiSlice = createSlice({
       })
       .addCase(markAllRead.fulfilled, (s) => {
         s.notifications = s.notifications.map((n) => ({ ...n, read: true }));
+      })
+
+      // ↓↓↓ NEW: reflect credits deduction instantly after each reply
+      .addCase(sendMessage.fulfilled, (s, a) => {
+        const left = a.payload?.creditsLeft;
+        const spent = Number(a.payload?.spent ?? 10);
+        if (Number.isFinite(left)) {
+          s.credits = left;
+        } else if (Number.isFinite(s.credits)) {
+          s.credits = Math.max(0, s.credits - spent);
+        }
       });
   },
 });
