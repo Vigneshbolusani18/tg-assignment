@@ -1,13 +1,15 @@
+// auth.middleware.js
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import { unauthorized } from '../utils/http.js';
 
-export async function requireAuth(req, res, next) {
+export async function authGuard(req, res, next) {
   try {
     const h = req.headers.authorization || '';
     const token = h.startsWith('Bearer ') ? h.slice(7) : null;
     if (!token) return unauthorized(res, 'missing_token');
-    const decoded = jwt.verify(token, env.JWT_SECRET); // { id, username, iat, exp }
+
+    const decoded = jwt.verify(token, env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch {
