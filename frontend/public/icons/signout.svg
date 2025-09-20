@@ -1,0 +1,6 @@
+<!-- signout.svg -->
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#7B89B0" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M15 7l5 5-5 5"/>
+  <path d="M20 12H9"/>
+  <path d="M12 19a7 7 0 110-14"/>
+</svg>

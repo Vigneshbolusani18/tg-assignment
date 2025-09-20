@@ -5,11 +5,14 @@ import { Outlet } from "react-router-dom";
 
 export default function AppLayout(){
   return (
-    <div className="min-h-screen bg-[#f5f7fb] text-slate-900 flex">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Topbar />
-        <main className="p-6">
+    <div className="min-h-screen bg-[#f5f7fb] text-slate-900 flex flex-col">
+      {/* Topbar sits alone at the very top */}
+      <Topbar />
+
+      {/* Below it: sidebar + main content in a row */}
+      <div className="flex flex-1">
+        <Sidebar />
+        <main className="flex-1 p-6">
           <Outlet />
         </main>
       </div>

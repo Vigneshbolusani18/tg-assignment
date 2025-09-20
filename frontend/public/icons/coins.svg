@@ -1,0 +1,6 @@
+<!-- coins.svg -->
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#4B6BFF" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 6.5c4.142 0 7.5-1.12 7.5-2.5S16.142 1.5 12 1.5 4.5 2.62 4.5 4 7.858 6.5 12 6.5Z"/>
+  <path d="M19.5 4v4c0 1.38-3.358 2.5-7.5 2.5S4.5 9.38 4.5 8V4"/>
+  <path d="M19.5 8v4c0 1.38-3.358 2.5-7.5 2.5S4.5 13.38 4.5 12V8"/>
+</svg>
