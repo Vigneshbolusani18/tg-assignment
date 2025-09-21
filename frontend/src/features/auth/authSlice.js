@@ -61,5 +61,6 @@ const slice = createSlice({
      .addCase(logoutThunk.fulfilled,(s)      => { s.accessToken=null; s.user=null; setAuthHeader(null); });
   }
 });
+
 export const { setAccessToken } = slice.actions;
 export default slice.reducer;

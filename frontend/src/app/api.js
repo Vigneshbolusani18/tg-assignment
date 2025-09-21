@@ -11,10 +11,10 @@ export const endpoints = {
   me: "/auth/me",
 
   // chat
-  conversations: "/messages/conversations",   // GET list
-  createConversation: "/messages/new",        // POST  ← ADDED
-  messages: (id) => `/messages/${id}`,        // GET messages
-  send: (id) => `/messages/${id}`,            // POST message
+  conversations: "/messages/conversations",
+  createConversation: "/messages/new",
+  messages: (id) => `/messages/${id}`,
+  send: (id) => `/messages/${id}`,
 
   // meta
   credits: "/credits",
@@ -23,7 +23,7 @@ export const endpoints = {
 
 const api = axios.create({
   baseURL: API_BASE,
-  withCredentials: true,
+  withCredentials: true, // REQUIRED for cookies
 });
 
 export const pickAccess = (data) => data?.access_token ?? data?.accessToken ?? null;
