@@ -16,9 +16,7 @@ export async function signup(req, res) {
     const access_token = signAccessToken(user);
     const refresh_token = await issueRefreshToken(user.id);
 
-    // Set HttpOnly cookie (still return in JSON for CLI tests)
     setRefreshCookie(res, refresh_token);
-
     return created(res, { user: { id: user.id, username: user.username }, access_token, refresh_token });
   } catch (e) {
     console.error('SIGNUP ERROR:', e);
@@ -50,26 +48,21 @@ export async function signin(req, res) {
 
 export async function refresh(req, res) {
   try {
-    // Prefer cookie (best practice). Fallback to body for CLI/PowerShell.
     const cookieToken = req.cookies?.refresh_token;
     const bodyToken = req.body?.refresh_token;
     const token = cookieToken || bodyToken;
     if (!token) return badRequest(res, 'missing_refresh_token');
 
-    // Rotate: revoke old, issue new
     const rotated = await rotateRefreshToken(token);
     if (!rotated) return unauthorized(res, 'invalid_refresh');
 
     const { userId, refreshToken } = rotated;
 
-    // Fetch minimal user info to sign new access token
     const rr = await pool.query(`SELECT id, username FROM users WHERE id=$1`, [userId]);
     const u = rr.rows[0];
     const access_token = signAccessToken(u);
 
-    // Update cookie
     setRefreshCookie(res, refreshToken);
-
     return ok(res, { access_token, refresh_token: refreshToken });
   } catch (e) {
     console.error('REFRESH ERROR:', e);

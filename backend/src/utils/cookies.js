@@ -2,10 +2,10 @@ export function setRefreshCookie(res, token) {
   const isProd = process.env.NODE_ENV === 'production';
   res.cookie('refresh_token', token, {
     httpOnly: true,
-    secure: isProd,            // must be true in prod over HTTPS
-    sameSite: isProd ? 'none' : 'lax', // required for cross-site cookies
-    path: '/auth',             // cookie is sent only to /auth/*
-    maxAge: 7 * 24 * 60 * 60 * 1000
+    secure: isProd,                       // HTTPS only in prod
+    sameSite: isProd ? 'none' : 'lax',   // cross-site allowed in prod
+    path: '/auth',                       // only sent to /auth/*
+    maxAge: 7 * 24 * 60 * 60 * 1000,     // 7 days
   });
 }
 
