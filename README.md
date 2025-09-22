@@ -1,5 +1,9 @@
 # TG Assignment – Full-Stack AI Chat App
 
+
+#APP URL- https://tg-frontend-beige.vercel.app/
+
+
 This project is a **React + Express (Node.js) full-stack web application** that implements:
 
 - User authentication (JWT + Refresh Tokens with cookies)
@@ -423,3 +427,4 @@ Auth: Bearer {{access_token}}
 ## 📜 License
 
 MIT License
+
